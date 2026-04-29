@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "866069785842",
+    "firebase_url": "https://holydaysapp-default-rtdb.firebaseio.com",
+    "project_id": "holydaysapp",
+    "storage_bucket": "holydaysapp.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:866069785842:android:de7520a8b4abfd6b89f46b",
+        "android_client_info": {
+          "package_name": "com.example.holydays_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5__hR9rhwR3CQVOM_30MwECd-Rb0Wz2Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
