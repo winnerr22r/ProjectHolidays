@@ -32,12 +32,13 @@ class _LoginScreenState extends State<LoginScreen>
       vsync: this,
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _slideAnimationController, curve: Curves.easeOut),
-    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _slideAnimationController,
+            curve: Curves.easeOut,
+          ),
+        );
 
     _slideAnimationController.forward();
   }
@@ -69,7 +70,7 @@ class _LoginScreenState extends State<LoginScreen>
       }
     } catch (e) {
       if (mounted) {
-        _showErrorSnackBar(e.toString());
+        _showErrorSnackBar(_authService.getAuthErrorMessage(e));
       }
     } finally {
       if (mounted) {
@@ -92,9 +93,8 @@ class _LoginScreenState extends State<LoginScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SingleChildScrollView(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: SlideTransition(
             position: _slideAnimation,
             child: FadeTransition(
@@ -103,8 +103,8 @@ class _LoginScreenState extends State<LoginScreen>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // Header section
-                  Expanded(
-                    flex: 1,
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.4,
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -121,7 +121,9 @@ class _LoginScreenState extends State<LoginScreen>
                               shape: BoxShape.circle,
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.primary.withOpacity(0.3),
+                                  color: AppColors.primary.withAlpha(
+                                    (0.3 * 255).round(),
+                                  ),
                                   blurRadius: 20,
                                   spreadRadius: 5,
                                 ),
@@ -155,87 +157,86 @@ class _LoginScreenState extends State<LoginScreen>
                     ),
                   ),
                   // Form section
-                  Expanded(
-                    flex: 1,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.lg,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // Email field
-                          CustomTextField(
-                            label: 'Email',
-                            hintText: 'Enter your email',
-                            controller: _emailController,
-                            prefixIcon: Icons.email_outlined,
-                            keyboardType: TextInputType.emailAddress,
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          // Password field
-                          CustomTextField(
-                            label: 'Password',
-                            hintText: 'Enter your password',
-                            controller: _passwordController,
-                            obscureText: _obscurePassword,
-                            prefixIcon: Icons.lock_outlined,
-                            suffixIcon: _obscurePassword
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
-                            onSuffixIconPressed: () {
-                              setState(() {
-                                _obscurePassword = !_obscurePassword;
-                              });
-                            },
-                          ),
-                          const SizedBox(height: AppSpacing.lg),
-                          // Login button
-                          _isLoading
-                              ? SizedBox(
-                                  height: 50,
-                                  child: Center(
-                                    child: CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                        AppColors.primary,
-                                      ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppSpacing.lg,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Email field
+                        CustomTextField(
+                          label: 'Email',
+                          hintText: 'Enter your email',
+                          controller: _emailController,
+                          prefixIcon: Icons.email_outlined,
+                          keyboardType: TextInputType.emailAddress,
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+                        // Password field
+                        CustomTextField(
+                          label: 'Password',
+                          hintText: 'Enter your password',
+                          controller: _passwordController,
+                          obscureText: _obscurePassword,
+                          prefixIcon: Icons.lock_outlined,
+                          suffixIcon: _obscurePassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          onSuffixIconPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
+                        const SizedBox(height: AppSpacing.lg),
+                        // Login button
+                        _isLoading
+                            ? SizedBox(
+                                height: 50,
+                                child: Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      AppColors.primary,
                                     ),
                                   ),
-                                )
-                              : PrimaryButton(
-                                  label: 'Sign In',
-                                  onPressed: _handleLogin,
                                 ),
-                          const SizedBox(height: AppSpacing.md),
-                          // Create account link
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'Don\'t have an account? ',
+                              )
+                            : PrimaryButton(
+                                label: 'Sign In',
+                                onPressed: _handleLogin,
+                              ),
+                        const SizedBox(height: AppSpacing.md),
+                        // Create account link
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'Don\'t have an account? ',
+                              style: TextStyle(
+                                color: AppColors.textSecondary,
+                                fontSize: 14,
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed('/register');
+                              },
+                              child: const Text(
+                                'Create account',
                                 style: TextStyle(
-                                  color: AppColors.textSecondary,
+                                  color: AppColors.primary,
                                   fontSize: 14,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.of(context)
-                                      .pushNamed('/register');
-                                },
-                                child: const Text(
-                                  'Create account',
-                                  style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: AppSpacing.lg,
+                        ), // Extra space at bottom
+                      ],
                     ),
                   ),
                 ],

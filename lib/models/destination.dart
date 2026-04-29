@@ -33,7 +33,7 @@ final List<Destination> destinations = [
     rating: 4.8,
     location: 'Manado, North Sulawesi',
     imageUrl:
-        'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=500&fit=crop',
+        'https://th.bing.com/th/id/OIP.DJSM28mJBXHUdv4roTeg2AHaE8?w=269&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3',
   ),
   Destination(
     id: 2,
@@ -45,7 +45,7 @@ final List<Destination> destinations = [
     rating: 4.9,
     location: 'Raja Ampat, West Papua',
     imageUrl:
-        'https://images.unsplash.com/photo-1549144611-11cffcc6ad32?w=400&h=500&fit=crop',
+        'https://tse3.mm.bing.net/th/id/OIP.ZVmpYeVNdhvae_tR3qiRVgHaE8?r=0&pid=ImgDet&w=184&h=122&c=7&dpr=1,3&o=7&rm=3',
   ),
   Destination(
     id: 3,
@@ -57,7 +57,7 @@ final List<Destination> destinations = [
     rating: 4.7,
     location: 'Tabanan Regency, Bali',
     imageUrl:
-        'https://images.unsplash.com/photo-1537225228614-b4fad34a2b08?w=400&h=500&fit=crop',
+        'https://th.bing.com/th/id/OIP.cv90vhZbo8ZnY3MMniKSugHaE8?w=334&h=182&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3',
   ),
   Destination(
     id: 4,
@@ -69,7 +69,7 @@ final List<Destination> destinations = [
     rating: 4.8,
     location: 'Magelang, Central Java',
     imageUrl:
-        'https://images.unsplash.com/photo-1573186408919-1f8c9f8b7c8c?w=400&h=500&fit=crop',
+        'https://th.bing.com/th/id/OIP.sQmmIx-0h3_EqSLHw5T9qwHaE8?w=272&h=181&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3',
   ),
   Destination(
     id: 5,
@@ -81,7 +81,7 @@ final List<Destination> destinations = [
     rating: 4.5,
     location: 'Central Jakarta, Indonesia',
     imageUrl:
-        'https://images.unsplash.com/photo-1511379938547-c1f69b13d835?w=400&h=500&fit=crop',
+        'https://th.bing.com/th/id/OIP.HuzG3cKWbwsZvLY10Yq7lwHaE8?w=280&h=187&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3',
   ),
   Destination(
     id: 6,
@@ -93,7 +93,7 @@ final List<Destination> destinations = [
     rating: 4.6,
     location: 'Bandung, West Java',
     imageUrl:
-        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=500&fit=crop',
+        'https://th.bing.com/th/id/OIP.i6gyDcnx1fpKoLXWroDaIAHaE8?w=215&h=150&c=6&r=0&o=7&dpr=1.3&pid=1.7&rm=3',
   ),
   Destination(
     id: 7,
@@ -105,7 +105,7 @@ final List<Destination> destinations = [
     rating: 4.5,
     location: 'Surabaya, East Java',
     imageUrl:
-        'https://images.unsplash.com/photo-1490228768704-5466d40c6d9f?w=400&h=500&fit=crop',
+        'https://th.bing.com/th/id/OIP.RIYZWcAz34ogVsdzc0hpxgHaE7?w=291&h=194&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3',
   ),
   Destination(
     id: 8,
@@ -117,7 +117,7 @@ final List<Destination> destinations = [
     rating: 4.7,
     location: 'Gili Trawangan, Lombok',
     imageUrl:
-        'https://images.unsplash.com/photo-1511316695145-4992006ffddb?w=400&h=500&fit=crop',
+        'https://th.bing.com/th/id/OIP.YcDmyeW1xfUJ2Xg5bNNgqQHaEK?w=266&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3',
   ),
   Destination(
     id: 9,
@@ -129,7 +129,7 @@ final List<Destination> destinations = [
     rating: 4.6,
     location: 'Makassar, South Sulawesi',
     imageUrl:
-        'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=500&fit=crop',
+        'https://tse3.mm.bing.net/th/id/OIP.X32GJJCV_T4tzBfDluDF7wHaEK?r=0&w=700&h=393&rs=1&pid=ImgDetMain&o=7&rm=3',
   ),
   Destination(
     id: 10,
@@ -141,6 +141,6 @@ final List<Destination> destinations = [
     rating: 4.8,
     location: 'Labuan Bajo, East Nusa Tenggara',
     imageUrl:
-        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=500&fit=crop',
+        'https://th.bing.com/th/id/OIP.DD1usHdkSJbXYvj0UuFuWwHaEK?w=284&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3',
   ),
 ];

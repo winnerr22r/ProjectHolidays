@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart';
 import '../utils/constants.dart';
 import '../widgets/custom_button.dart';
 
@@ -18,8 +19,10 @@ class _RegisterScreenState extends State<RegisterScreen>
   late TextEditingController _confirmPasswordController;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _isLoading = false;
   late AnimationController _slideAnimationController;
   late Animation<Offset> _slideAnimation;
+  final AuthService _authService = AuthService();
 
   @override
   void initState() {
@@ -34,12 +37,13 @@ class _RegisterScreenState extends State<RegisterScreen>
       vsync: this,
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _slideAnimationController, curve: Curves.easeOut),
-    );
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _slideAnimationController,
+            curve: Curves.easeOut,
+          ),
+        );
 
     _slideAnimationController.forward();
   }
@@ -54,9 +58,52 @@ class _RegisterScreenState extends State<RegisterScreen>
     super.dispose();
   }
 
-  void _handleRegister() {
-    // Navigate to home screen after registration
-    Navigator.of(context).pushReplacementNamed('/home');
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red.shade600,
+        duration: const Duration(seconds: 4),
+      ),
+    );
+  }
+
+  Future<void> _handleRegister() async {
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
+
+    if (name.isEmpty ||
+        email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
+      _showErrorSnackBar('Silakan isi semua field.');
+      return;
+    }
+
+    if (password != confirmPassword) {
+      _showErrorSnackBar('Password dan konfirmasi password tidak cocok.');
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    try {
+      await _authService.registerWithEmail(
+        email: email,
+        password: password,
+        displayName: name,
+      );
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed('/home');
+      }
+    } catch (e) {
+      _showErrorSnackBar(_authService.getAuthErrorMessage(e));
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
   }
 
   @override
@@ -168,11 +215,15 @@ class _RegisterScreenState extends State<RegisterScreen>
                     },
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  // Register button
-                  PrimaryButton(
-                    label: 'Create Account',
-                    onPressed: _handleRegister,
-                  ),
+                  _isLoading
+                      ? const SizedBox(
+                          height: 50,
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      : PrimaryButton(
+                          label: 'Create Account',
+                          onPressed: _handleRegister,
+                        ),
                   const SizedBox(height: AppSpacing.md),
                   // Terms text
                   Text(

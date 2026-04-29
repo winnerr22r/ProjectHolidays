@@ -16,14 +16,9 @@ class AuthService {
     required String displayName,
   }) async {
     try {
-      // Create user account
-      final UserCredential userCredential =
-          await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      final UserCredential userCredential = await _firebaseAuth
+          .createUserWithEmailAndPassword(email: email, password: password);
 
-      // Update display name
       await userCredential.user?.updateDisplayName(displayName);
       await userCredential.user?.reload();
 
@@ -39,12 +34,55 @@ class AuthService {
     required String password,
   }) async {
     try {
-      final UserCredential userCredential =
-          await _firebaseAuth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      final UserCredential userCredential = await _firebaseAuth
+          .signInWithEmailAndPassword(email: email, password: password);
       return userCredential;
+    } on FirebaseAuthException catch (e) {
+      throw _handleAuthException(e);
+    }
+  }
+
+  /// Update display name and email
+  Future<void> updateProfile({String? displayName, String? email}) async {
+    final currentUser = _firebaseAuth.currentUser;
+    if (currentUser == null) {
+      throw 'User tidak ditemukan. Silakan login kembali.';
+    }
+
+    try {
+      if (displayName != null && displayName.trim().isNotEmpty) {
+        await currentUser.updateDisplayName(displayName.trim());
+      }
+
+      if (email != null &&
+          email.trim().isNotEmpty &&
+          email.trim() != currentUser.email) {
+        await currentUser.verifyBeforeUpdateEmail(email.trim());
+      }
+
+      await currentUser.reload();
+    } on FirebaseAuthException catch (e) {
+      throw _handleAuthException(e);
+    }
+  }
+
+  /// Change password after re-authentication
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    final currentUser = _firebaseAuth.currentUser;
+    if (currentUser == null || currentUser.email == null) {
+      throw 'User tidak ditemukan. Silakan login kembali.';
+    }
+
+    try {
+      final credential = EmailAuthProvider.credential(
+        email: currentUser.email!,
+        password: currentPassword,
+      );
+      await currentUser.reauthenticateWithCredential(credential);
+      await currentUser.updatePassword(newPassword);
     } on FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
     }
@@ -64,6 +102,17 @@ class AuthService {
     }
   }
 
+  /// Convert an authentication error into a readable message.
+  String getAuthErrorMessage(Object error) {
+    if (error is FirebaseAuthException) {
+      return _handleAuthException(error);
+    }
+    if (error is String) {
+      return error;
+    }
+    return 'Terjadi kesalahan: ${error.toString()}';
+  }
+
   /// Handle Firebase Authentication exceptions
   String _handleAuthException(FirebaseAuthException e) {
     switch (e.code) {
@@ -81,10 +130,19 @@ class AuthService {
         return 'Password salah. Silakan coba lagi.';
       case 'invalid-credential':
         return 'Email atau password salah.';
+      case 'requires-recent-login':
+        return 'Aksi ini memerlukan login ulang. Silakan logout dan login kembali.';
       case 'too-many-requests':
-        return 'Terlalu banyak percobaan login gagal. Coba lagi nanti.';
+        return 'Terlalu banyak percobaan. Coba lagi nanti.';
+      case 'operation-not-allowed':
+        return 'Email/password sign-in belum diaktifkan di Firebase Console.';
+      case 'email-already-exists':
+        return 'Email sudah terdaftar. Silakan gunakan email lain atau login.';
+      case 'invalid-api-key':
+        return 'Konfigurasi Firebase tidak valid. Periksa API key di firebase_options.dart.';
       default:
-        return 'Terjadi kesalahan: ${e.message}';
+        final message = e.message ?? 'Terjadi kesalahan tidak dikenal.';
+        return 'Terjadi kesalahan (${e.code}): $message';
     }
   }
 }

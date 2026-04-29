@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import './favorites_provider.dart';
 import '../utils/constants.dart';
 import '../widgets/destination_card.dart';
-import '../models/destination.dart';
 
-/// Favorites screen
-class FavoritesScreen extends StatefulWidget {
+/// Favorites screen — shows destinations saved via the heart icon
+class FavoritesScreen extends StatelessWidget {
   const FavoritesScreen({super.key});
 
   @override
-  State<FavoritesScreen> createState() => _FavoritesScreenState();
-}
-
-class _FavoritesScreenState extends State<FavoritesScreen> {
-  // Using first 5 destinations as favorites for demo
-  final List<Destination> favorites = destinations.sublist(0, 5);
-
-  @override
   Widget build(BuildContext context) {
+    final favorites = context.watch<FavoritesProvider>().favorites;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -30,70 +25,106 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             fontWeight: FontWeight.w700,
           ),
         ),
-      ),
-      body: favorites.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.favorite_border,
-                    size: 64,
-                    color: AppColors.primary.withOpacity(0.3),
+        actions: [
+          if (favorites.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.only(right: AppSpacing.md),
+              child: Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: 4,
                   ),
-                  const SizedBox(height: AppSpacing.lg),
-                  const Text(
-                    'No favorites yet',
-                    style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 16,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
+                  ),
+                  child: Text(
+                    '${favorites.length} saved',
+                    style: const TextStyle(
+                      color: AppColors.primary,
+                      fontSize: 12,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
-                  const Text(
-                    'Add your favorite destinations',
-                    style: TextStyle(
-                      color: AppColors.textTertiary,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.md),
-                child: Column(
-                  children: [
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: AppSpacing.md,
-                        mainAxisSpacing: AppSpacing.md,
-                        childAspectRatio: 0.85,
-                      ),
-                      itemCount: favorites.length,
-                      itemBuilder: (context, index) {
-                        return DestinationCard(
-                          destination: favorites[index],
-                          onTap: () {
-                            Navigator.of(context).pushNamed(
-                              '/detail',
-                              arguments: favorites[index],
-                            );
-                          },
-                        );
-                      },
-                    ),
-                    const SizedBox(height: AppSpacing.lg),
-                  ],
                 ),
               ),
             ),
+        ],
+      ),
+      body: favorites.isEmpty ? _buildEmpty() : _buildGrid(context, favorites),
+    );
+  }
+
+  Widget _buildEmpty() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: 1),
+            duration: const Duration(milliseconds: 600),
+            curve: Curves.elasticOut,
+            builder: (context, value, child) =>
+                Transform.scale(scale: value, child: child),
+            child: Icon(
+              Icons.favorite_border,
+              size: 72,
+              color: AppColors.primary.withOpacity(0.3),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          const Text(
+            'No favorites yet',
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          const Text(
+            'Tap the ♡ on any destination to save it here',
+            style: TextStyle(color: AppColors.textTertiary, fontSize: 14),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGrid(BuildContext context, favorites) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        child: Column(
+          children: [
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: AppSpacing.md,
+                mainAxisSpacing: AppSpacing.md,
+                childAspectRatio: 0.85,
+              ),
+              itemCount: favorites.length,
+              itemBuilder: (context, index) {
+                final destination = favorites[index];
+                return DestinationCard(
+                  destination: destination,
+                  onTap: () {
+                    Navigator.of(
+                      context,
+                    ).pushNamed('/detail', arguments: destination);
+                  },
+                );
+              },
+            ),
+            const SizedBox(height: AppSpacing.lg),
+          ],
+        ),
+      ),
     );
   }
 }

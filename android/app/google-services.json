@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "526271683994",
+    "project_id": "crudd-725f3",
+    "storage_bucket": "crudd-725f3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:526271683994:android:9e1c0d136003c7ba2f6e23",
+        "android_client_info": {
+          "package_name": "com.example.holydays"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA39ZS7JlNRRrz8qWh7U8-mLVQv7UPNL94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
